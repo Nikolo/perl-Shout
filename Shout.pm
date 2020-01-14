@@ -86,6 +86,7 @@ The following functions are exported into your package if the 'C<:functions>'
 tag is given as an argument to the C<use> statement.
 
 	shout_open
+    shout_get_connected
 	shout_close
 	shout_metadata_new
 	shout_metadata_free
@@ -193,7 +194,7 @@ BEGIN {
 	SHOUTERR_SUCCESS SHOUTERR_INSANE SHOUTERR_NOCONNECT SHOUTERR_NOLOGIN 
 	SHOUTERR_SOCKET SHOUTERR_MALLOC SHOUTERR_METADATA SHOUTERR_CONNECTED 
 	SHOUTERR_UNCONNECTED SHOUTERR_UNSUPPORTED SHOUTERR_BUSY
-	shout_open shout_close
+	shout_open shout_get_connected shout_close
 	shout_set_metadata shout_metadata_new shout_metadata_free 
 	shout_metadata_add shout_send_data shout_sync shout_delay shout_queuelen
 	shout_set_host shout_set_port shout_set_mount shout_set_password
@@ -218,7 +219,7 @@ BEGIN {
 	    SHOUTERR_SOCKET SHOUTERR_MALLOC SHOUTERR_METADATA SHOUTERR_CONNECTED 
 	    SHOUTERR_UNCONNECTED SHOUTERR_UNSUPPORTED SHOUTERR_BUSY
 	}],
-        functions => [qw{shout_open shout_close
+        functions => [qw{shout_open shout_get_connected shout_close
             shout_set_metadata shout_metadata_add shout_metadata_new
 	    shout_metadata_free shout_send_data shout_sync shout_delay
 	    shout_get_audio_info shout_set_audio_info
@@ -343,6 +344,16 @@ sub open {
     my $self = shift or croak "open: Method called as function";
 
     $self->shout_open ? 0 : 1;
+}
+
+### METHOD: get_connected( undef )
+### Connect to the target server. Returns undef and sets the object error
+###		message if the open fails; returns a true value if the open
+###		succeeds.
+sub get_connected {
+    my $self = shift or croak "open: Method called as function";
+
+    $self->shout_get_connected;
 }
 
 ### METHOD: close( undef )

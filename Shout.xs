@@ -259,6 +259,10 @@ shout_open(self)
 	shout_t *self
 
 int
+shout_get_connected(self)
+	shout_t *self
+
+int
 shout_close(self)
 	shout_t *self
 
