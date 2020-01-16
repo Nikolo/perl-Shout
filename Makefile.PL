@@ -18,5 +18,5 @@ WriteMakefile(
     'ABSTRACT'  => 'Perl bindings for the libshout audio streaming library',
     'VERSION_FROM' => 'Shout.pm', # finds $VERSION
     'CCFLAGS'   => $ccflags,
-    'LIBS'	=> $libs 
+    'LIBS'	=> $libs
 );

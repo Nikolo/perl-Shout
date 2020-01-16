@@ -7,23 +7,23 @@ Shout - Perl glue for libshout MP3 streaming source library
 
 =head1 SYNOPSIS
 
-  use Shout	qw{};
+  use Shout        qw{};
 
   my $conn = new Shout
-	host  		=> 'localhost',
-	port		=> 8000,
-	mount		=> 'testing',
+        host                  => 'localhost',
+        port                => 8000,
+        mount                => 'testing',
         nonblocking     => 0,
-	password	=> 'pa$$word!',
-	user		=> 'username',
-	dumpfile	=> undef,
-	name		=> 'Wir sind nur Affen',
-	url		=> 'http://apan.org/'
-	genre		=> 'Monkey Music',
-	description	=> 'A whole lotta monkey music.',
-	format          => SHOUT_FORMAT_MP3,
+        password        => 'pa$$word!',
+        user                => 'username',
+        dumpfile        => undef,
+        name                => 'Wir sind nur Affen',
+        url                => 'http://apan.org/'
+        genre                => 'Monkey Music',
+        description        => 'A whole lotta monkey music.',
+        format          => SHOUT_FORMAT_MP3,
         protocol        => SHOUT_PROTOCOL_HTTP,
-	public	        => 0;
+        public                => 0;
 
   # - or -
 
@@ -75,8 +75,8 @@ Nothing by default.
 The following error constants are exported into your package if the
 'C<:constants>' tag is given as an argument to the C<use> statement.
 
-	SHOUT_FORMAT_MP3 SHOUT_FORMAT_VORBIS
-	SHOUT_PROTOCOL_ICY SHOUT_PROTOCOL_XAUDIOCAST SHOUT_PROTOCOL_HTTP
+        SHOUT_FORMAT_MP3 SHOUT_FORMAT_VORBIS
+        SHOUT_PROTOCOL_ICY SHOUT_PROTOCOL_XAUDIOCAST SHOUT_PROTOCOL_HTTP
         SHOUT_AI_BITRATE SHOUT_AI_SAMPLERATE SHOUT_AI_CHANNELS
         SHOUT_AI_QUALITY
 
@@ -85,52 +85,52 @@ The following error constants are exported into your package if the
 The following functions are exported into your package if the 'C<:functions>'
 tag is given as an argument to the C<use> statement.
 
-	shout_open
+        shout_open
     shout_get_connected
-	shout_close
-	shout_metadata_new
-	shout_metadata_free
-	shout_metadata_add
-	shout_set_metadata
-	shout_send_data
-	shout_sync
-	shout_delay
-	shout_set_host
-	shout_set_port
-	shout_set_mount
+        shout_close
+        shout_metadata_new
+        shout_metadata_free
+        shout_metadata_add
+        shout_set_metadata
+        shout_send_data
+        shout_sync
+        shout_delay
+        shout_set_host
+        shout_set_port
+        shout_set_mount
         shout_set_nonblocking
-	shout_set_password
-	shout_set_user
-	shout_set_icq
-	shout_set_irc
-	shout_set_dumpfile
-	shout_set_name
-	shout_set_url
-	shout_set_genre
-	shout_set_description
-	shout_set_public
-	shout_get_host
-	shout_get_port
-	shout_get_mount
+        shout_set_password
+        shout_set_user
+        shout_set_icq
+        shout_set_irc
+        shout_set_dumpfile
+        shout_set_name
+        shout_set_url
+        shout_set_genre
+        shout_set_description
+        shout_set_public
+        shout_get_host
+        shout_get_port
+        shout_get_mount
         shout_get_nonblocking
-	shout_get_password
-	shout_get_user
-	shout_get_icq
-	shout_get_irc
-	shout_get_dumpfile
-	shout_get_name
-	shout_get_url
-	shout_get_genre
-	shout_get_description
-	shout_get_public
-	shout_get_error
-	shout_get_errno
-	shout_set_format
-	shout_get_format
-	shout_set_protocol
-	shout_get_protocol
-	shout_set_audio_info
-	shout_get_audio_info
+        shout_get_password
+        shout_get_user
+        shout_get_icq
+        shout_get_irc
+        shout_get_dumpfile
+        shout_get_name
+        shout_get_url
+        shout_get_genre
+        shout_get_description
+        shout_get_public
+        shout_get_error
+        shout_get_errno
+        shout_set_format
+        shout_get_format
+        shout_set_protocol
+        shout_get_protocol
+        shout_set_audio_info
+        shout_get_audio_info
         shout_queuelen
 
 They work almost identically to their libshout C counterparts. See the libshout
@@ -178,61 +178,61 @@ BEGIN {
 
     ### Exporter stuff
     @EXPORT = qw {
-	SHOUT_FORMAT_VORBIS SHOUT_FORMAT_MP3
-	SHOUT_PROTOCOL_ICY SHOUT_PROTOCOL_XAUDIOCAST SHOUT_PROTOCOL_HTTP
+        SHOUT_FORMAT_VORBIS SHOUT_FORMAT_MP3
+        SHOUT_PROTOCOL_ICY SHOUT_PROTOCOL_XAUDIOCAST SHOUT_PROTOCOL_HTTP
         SHOUT_AI_BITRATE SHOUT_AI_SAMPLERATE SHOUT_AI_QUALITY
         SHOUT_AI_CHANNELS
-	SHOUTERR_SUCCESS SHOUTERR_INSANE SHOUTERR_NOCONNECT SHOUTERR_NOLOGIN 
-	SHOUTERR_SOCKET SHOUTERR_MALLOC SHOUTERR_METADATA SHOUTERR_CONNECTED 
-	SHOUTERR_UNCONNECTED SHOUTERR_UNSUPPORTED SHOUTERR_BUSY
+        SHOUTERR_SUCCESS SHOUTERR_INSANE SHOUTERR_NOCONNECT SHOUTERR_NOLOGIN
+        SHOUTERR_SOCKET SHOUTERR_MALLOC SHOUTERR_METADATA SHOUTERR_CONNECTED
+        SHOUTERR_UNCONNECTED SHOUTERR_UNSUPPORTED SHOUTERR_BUSY
     };
     @EXPORT_OK = qw{
-	SHOUT_FORMAT_VORBIS SHOUT_FORMAT_MP3
-	SHOUT_PROTOCOL_ICY SHOUT_PROTOCOL_XAUDIOCAST SHOUT_PROTOCOL_HTTP
+        SHOUT_FORMAT_VORBIS SHOUT_FORMAT_MP3
+        SHOUT_PROTOCOL_ICY SHOUT_PROTOCOL_XAUDIOCAST SHOUT_PROTOCOL_HTTP
         SHOUT_AI_BITRATE SHOUT_AI_SAMPLERATE SHOUT_AI_QUALITY
         SHOUT_AI_CHANNELS
-	SHOUTERR_SUCCESS SHOUTERR_INSANE SHOUTERR_NOCONNECT SHOUTERR_NOLOGIN 
-	SHOUTERR_SOCKET SHOUTERR_MALLOC SHOUTERR_METADATA SHOUTERR_CONNECTED 
-	SHOUTERR_UNCONNECTED SHOUTERR_UNSUPPORTED SHOUTERR_BUSY
-	shout_open shout_get_connected shout_close
-	shout_set_metadata shout_metadata_new shout_metadata_free 
-	shout_metadata_add shout_send_data shout_sync shout_delay shout_queuelen
-	shout_set_host shout_set_port shout_set_mount shout_set_password
-	shout_set_user shout_set_dumpfile shout_set_name
-	shout_set_url shout_set_genre shout_set_description
-	shout_set_public shout_get_host
-	shout_get_port shout_get_mount shout_get_password
-	shout_get_user shout_get_dumpfile shout_get_name
-	shout_get_url shout_get_genre shout_get_description
-	shout_get_public shout_get_error shout_set_format shout_get_format
-	shout_get_audio_info shout_set_audio_info
-	shout_set_protocol shout_get_protocol shout_get_errno
+        SHOUTERR_SUCCESS SHOUTERR_INSANE SHOUTERR_NOCONNECT SHOUTERR_NOLOGIN
+        SHOUTERR_SOCKET SHOUTERR_MALLOC SHOUTERR_METADATA SHOUTERR_CONNECTED
+        SHOUTERR_UNCONNECTED SHOUTERR_UNSUPPORTED SHOUTERR_BUSY
+        shout_open shout_get_connected shout_close
+        shout_set_metadata shout_metadata_new shout_metadata_free
+        shout_metadata_add shout_send_data shout_sync shout_delay shout_queuelen
+        shout_set_host shout_set_port shout_set_mount shout_set_password
+        shout_set_user shout_set_dumpfile shout_set_name
+        shout_set_url shout_set_genre shout_set_description
+        shout_set_public shout_get_host
+        shout_get_port shout_get_mount shout_get_password
+        shout_get_user shout_get_dumpfile shout_get_name
+        shout_get_url shout_get_genre shout_get_description
+        shout_get_public shout_get_error shout_set_format shout_get_format
+        shout_get_audio_info shout_set_audio_info
+        shout_set_protocol shout_get_protocol shout_get_errno
         shout_get_nonblocking shout_set_nonblocking
     };
     %EXPORT_TAGS = (
-	all       => \@EXPORT_OK,
-	constants => [qw{SHOUT_FORMAT_VORBIS SHOUT_FORMAT_MP3
+        all       => \@EXPORT_OK,
+        constants => [qw{SHOUT_FORMAT_VORBIS SHOUT_FORMAT_MP3
             SHOUT_PROTOCOL_ICY SHOUT_PROTOCOL_XAUDIOCAST SHOUT_PROTOCOL_HTTP
             SHOUT_AI_BITRATE SHOUT_AI_SAMPLERATE SHOUT_AI_QUALITY
             SHOUT_AI_CHANNELS
-	    SHOUTERR_SUCCESS SHOUTERR_INSANE SHOUTERR_NOCONNECT SHOUTERR_NOLOGIN 
-	    SHOUTERR_SOCKET SHOUTERR_MALLOC SHOUTERR_METADATA SHOUTERR_CONNECTED 
-	    SHOUTERR_UNCONNECTED SHOUTERR_UNSUPPORTED SHOUTERR_BUSY
-	}],
+            SHOUTERR_SUCCESS SHOUTERR_INSANE SHOUTERR_NOCONNECT SHOUTERR_NOLOGIN
+            SHOUTERR_SOCKET SHOUTERR_MALLOC SHOUTERR_METADATA SHOUTERR_CONNECTED
+            SHOUTERR_UNCONNECTED SHOUTERR_UNSUPPORTED SHOUTERR_BUSY
+        }],
         functions => [qw{shout_open shout_get_connected shout_close
             shout_set_metadata shout_metadata_add shout_metadata_new
-	    shout_metadata_free shout_send_data shout_sync shout_delay
-	    shout_get_audio_info shout_set_audio_info
-	    shout_set_host shout_set_port shout_set_mount shout_set_password
-	    shout_set_user shout_set_dumpfile shout_set_name
-	    shout_set_url shout_set_genre shout_set_description
-	    shout_set_public shout_get_host
-	    shout_get_port shout_get_mount shout_get_password
-	    shout_get_user shout_get_dumpfile shout_get_name
-	    shout_get_url shout_get_genre shout_get_description
-	    shout_get_public shout_get_error shout_get_errno
-	    shout_set_protocol shout_get_protocol
-	    shout_set_format shout_get_format
+            shout_metadata_free shout_send_data shout_sync shout_delay
+            shout_get_audio_info shout_set_audio_info
+            shout_set_host shout_set_port shout_set_mount shout_set_password
+            shout_set_user shout_set_dumpfile shout_set_name
+            shout_set_url shout_set_genre shout_set_description
+            shout_set_public shout_get_host
+            shout_get_port shout_get_mount shout_get_password
+            shout_get_user shout_get_dumpfile shout_get_name
+            shout_get_url shout_get_genre shout_get_description
+            shout_get_public shout_get_error shout_get_errno
+            shout_set_protocol shout_get_protocol
+            shout_set_format shout_get_format
             shout_get_nonblocking shout_set_nonblocking shout_queuelen
         }],
     );
@@ -249,7 +249,7 @@ END {
 bootstrap Shout $VERSION;
 
 ###############################################################################
-###	C O N F I G U R A T I O N   G L O B A L S
+###        C O N F I G U R A T I O N   G L O B A L S
 ###############################################################################
 use vars qw{@TranslatedMethods %CompatibilityMethods};
 
@@ -276,61 +276,93 @@ use vars qw{@TranslatedMethods %CompatibilityMethods};
 );
 
 ###############################################################################
-###	M E T H O D S
+###        M E T H O D S
 ###############################################################################
 
-### (CONSTRUCTOR) METHOD: new( %config )
-###	Create and initialize a new icecast server connection. The configuration
-###		hash is in the following form:
-###
-###		(
-###			host		=> <destination ip address>,
-###			port		=> <destination port>,
-###			mount		=> <stream mountpoint>,
-###			nonblocking	=> <use nonblocking IO>,
-###			password	=> <password to use when connecting>,
-###			user		=> <username to use when connecting>,
-###			dumpfile	=> <dumpfile for the stream>,
-###			name		=> <name of the stream>,
-###			url		=> <url of stream's homepage>,
-###			genre		=> <genre of the stream>,
-###			format		=> <SHOUT_FORMAT_MP3|SHOUT_FORMAT_VORBIS>,
-###                     protocol        => <SHOUT_PROTOCOL_ICY|SHOUT_PROTOCOL_XAUDIOCAST|SHOUT_PROTOCOL_HTTP>,
-###			description	=> <stream description>,
-###			public	        => <list the stream in directory servers?>
-###		)
-###
-### None of the keys are mandatory, and may be set after the connection object
-###		is created. This method returns the initialized icecast server
-###		connection object. Returns the undefined value on failure.
+=head1 new
+
+Constructor
+
+None of the keys are mandatory, and may be set after the connection object
+is created. This method returns the initialized icecast server
+connection object. Returns the undefined value on failure.
+
+=over
+
+Parameters
+
+=item host
+
+destination ip address
+
+=item port
+
+destination port
+
+=item mount
+
+stream mountpoint
+
+=item nonblocking
+
+use nonblocking IO
+
+=item password
+
+password to use when connecting
+
+=item user
+
+username to use when connecting
+
+=item dumpfile
+
+dumpfile for the stream
+
+=item name
+
+name of the stream
+
+=item url
+
+url of stream's homepage
+
+=item genre
+
+genre of the stream
+
+=item format
+
+SHOUT_FORMAT_MP3|SHOUT_FORMAT_VORBIS
+
+=item protocol
+
+SHOUT_PROTOCOL_ICY|SHOUT_PROTOCOL_XAUDIOCAST|SHOUT_PROTOCOL_HTTP
+
+=item description
+
+stream description
+
+=item public
+
+list the stream in directory servers?
+
+=back
+
+=cut
+
 sub new {
-    my $proto = shift;
+    my ($proto, %args) = @_;
     my $class = ref $proto || $proto;
-
-    my (
-	%args,					# The config pseudo-hash
-	$self,					# The shout_conn_t object
-    );
-
-    ### Unwrap the pseudo-hash into a real one
-    %args = @_;
-
-    ### Call our parent's constructor
-    $self = $class->raw_new() or return undef;
+    my $self = $class->raw_new() or return undef; # Call lib function
 
     ### Set each of the config hash elements by using the keys of the
-    ###		config pseudo-hash as the method name
+    ###                config pseudo-hash as the method name
     foreach my $method ( keys %args ) {
-
-	### Allow keys to be of varying case and preceeded by an optional '-'
-	$method =~ s{^-}{};
-	$method = lc $method;
-
-	### Turn off strict references so we can use a variable as a method name
-        NO_STRICT: {
-	    no strict 'refs';
-	    $self->$method( $args{$method} );
-	}
+        ### Allow keys to be of varying case and preceeded by an optional '-'
+        $method =~ s{^-}{};
+        $method = lc $method;
+        $self->$method( $args{$method} );
     }
 
     return $self;
@@ -338,8 +370,8 @@ sub new {
 
 ### METHOD: open( undef )
 ### Connect to the target server. Returns undef and sets the object error
-###		message if the open fails; returns a true value if the open
-###		succeeds.
+###                message if the open fails; returns a true value if the open
+###                succeeds.
 sub open {
     my $self = shift or croak "open: Method called as function";
 
@@ -348,8 +380,8 @@ sub open {
 
 ### METHOD: get_connected( undef )
 ### Connect to the target server. Returns undef and sets the object error
-###		message if the open fails; returns a true value if the open
-###		succeeds.
+###                message if the open fails; returns a true value if the open
+###                succeeds.
 sub get_connected {
     my $self = shift or croak "open: Method called as function";
 
@@ -358,8 +390,8 @@ sub get_connected {
 
 ### METHOD: close( undef )
 ### Disconnect from the target server. Returns undef and sets the object error
-###		message if the close fails; returns a true value if the close
-###		succeeds.
+###                message if the close fails; returns a true value if the close
+###                succeeds.
 sub close {
     my $self = shift or croak "close: Method called as function";
 
@@ -367,8 +399,8 @@ sub close {
 }
 
 ### METHOD: get_errno( undef )
-###	Returns a machine-readable integer if one has occurred in the
-###		object. Returns the undefined value if no error has occurred.
+###        Returns a machine-readable integer if one has occurred in the
+###                object. Returns the undefined value if no error has occurred.
 sub get_errno {
     my $self = shift or croak "get_errno: Method called as function";
 
@@ -376,8 +408,8 @@ sub get_errno {
 }
 
 ### METHOD: get_error( undef )
-###	Returns a human-readable get_error message if one has occurred in the
-###		object. Returns the undefined value if no error has occurred.
+###        Returns a human-readable get_error message if one has occurred in the
+###                object. Returns the undefined value if no error has occurred.
 sub get_error {
     my $self = shift or croak "get_error: Method called as function";
 
@@ -386,25 +418,25 @@ sub get_error {
 
 ### METHOD: set_metadata(key => value,key => value,...)
 ### Sets the metadata for the connection. Returns a true value if the update
-###		succeeds, and the undefined value if it fails.
+###                succeeds, and the undefined value if it fails.
 sub set_metadata ($$) {
     my $self = shift or croak "set_metadata: Method called as function";
 
     my %param=@_;
     my $md=shout_metadata_new();
     for my $k (keys %param) {
-	shout_metadata_add($md,$k,$param{$k});
+        shout_metadata_add($md,$k,$param{$k});
     }
     $self->shout_set_metadata($md) ? 0 : 1;
 }
 
 ### METHOD: send( $data[, $length] )
 ### Send the specified data with the optional length to the Icecast
-###		server. Returns a true value on success, and returns the undefined value
-###		after setting the per-object error message on failure.
+###                server. Returns a true value on success, and returns the undefined value
+###                after setting the per-object error message on failure.
 sub send ($$) {
-    my $self = shift	or croak "send_data: Method called as function";
-    my $data = shift	or croak "send_data: No data specified";
+    my $self = shift        or croak "send_data: Method called as function";
+    my $data = shift        or croak "send_data: No data specified";
     my $len = shift || length $data;
 
     $self->shout_send( $data, $len ) ? 0 : 1;
@@ -413,8 +445,8 @@ sub send ($$) {
 
 ### METHOD: sync( undef )
 ### Sleep until the connection is ready for more data. This function should be
-###		used only in conjuction with C<send()>, in order to send data 
-###		at the correct speed to the icecast server.
+###                used only in conjuction with C<send()>, in order to send data 
+###                at the correct speed to the icecast server.
 sub sync ($) {
     my $self = shift or croak "sync: Method called as function";
 
@@ -425,8 +457,8 @@ sub sync ($) {
 ### Tell how much time (in seconds and fraction of seconds) must be
 ### waited until more data can be sent. Use instead of sync() to
 ### allow you to do other things while waiting. 
-###		Used only in conjuction with C<send()>, in order to send data 
-###		at the correct speed to the icecast server.
+###                Used only in conjuction with C<send()>, in order to send data 
+###                at the correct speed to the icecast server.
 sub delay ($) {
     my $self = shift or croak "delay: Method called as function";
 
@@ -450,7 +482,7 @@ sub set_audio_info ($$) {
     my %param=@_;
  
     for my $k (keys %param) {
-	$self->shout_set_audio_info($k, $param{$k}) and return 0;
+        $self->shout_set_audio_info($k, $param{$k}) and return 0;
     }
 
     1;
@@ -486,15 +518,15 @@ sub connect ($) {
 sub icy_compat ($$) {
     my $self = shift or croak "icy_compat: Method called as function";
     if (@_) {
-	my $compat = shift;
+        my $compat = shift;
 
-	if ($compat) {
-	    $self->protocol(Shout::SHOUT_PROTOCOL_ICY()) ? 0 : 1;
-	} else {
-	    $self->protocol(Shout::SHOUT_PROTOCOL_XAUDIOCAST()) ? 0 : 1;
-	}
+        if ($compat) {
+            $self->protocol(Shout::SHOUT_PROTOCOL_ICY()) ? 0 : 1;
+        } else {
+            $self->protocol(Shout::SHOUT_PROTOCOL_XAUDIOCAST()) ? 0 : 1;
+        }
     } else {
-	return ($self->protocol == Shout::SHOUT_PROTOCOL_ICY()) ? 1 : 0;
+        return ($self->protocol == Shout::SHOUT_PROTOCOL_ICY()) ? 1 : 0;
     }
 }
 
@@ -503,11 +535,11 @@ sub icy_compat ($$) {
 sub bitrate ($$) {
     my $self = shift or croak "bitrate: Method called as function";
     if (@_) {
-	my $br = shift or croak "bitrate: No parameter specified";
+        my $br = shift or croak "bitrate: No parameter specified";
 
-	$self->set_audio_info(Shout::SHOUT_AI_BITRATE(), $br) ? 0 : 1;
+        $self->set_audio_info(Shout::SHOUT_AI_BITRATE(), $br) ? 0 : 1;
     } else {
-	return $self->get_audio_info(Shout::SHOUT_AI_BITRATE());
+        return $self->get_audio_info(Shout::SHOUT_AI_BITRATE());
     }
 }
 
@@ -521,88 +553,88 @@ sub updateMetadata ($$) {
 }
 
 ###############################################################################
-###	A U T O L O A D E D   M E T H O D S
+###        A U T O L O A D E D   M E T H O D S
 ###############################################################################
 
-###	METHOD: port( $portNumber )
-###	Get/set the port to connect to on the target Icecast server.
+###        METHOD: port( $portNumber )
+###        Get/set the port to connect to on the target Icecast server.
 
-###	METHOD: mount( $mountPointName )
-###	Get/set the mountpoint to use when connecting to the server.
+###        METHOD: mount( $mountPointName )
+###        Get/set the mountpoint to use when connecting to the server.
 
-###	METHOD: password( $password )
-###	Get/set the password to use when connecting to the Icecast server.
+###        METHOD: password( $password )
+###        Get/set the password to use when connecting to the Icecast server.
 
-###	METHOD: user( $username )
-###	Get/set the username to use when connecting to the Icecast server.
+###        METHOD: user( $username )
+###        Get/set the username to use when connecting to the Icecast server.
 
 ### METHOD: dumpfile( $filename )
 ### Get/set the name of the icecast dumpfile for the stream.  The dumpfile is a
-###		special feature of recent icecast servers. When dumpfile is not
-###		undefined, and the x-audiocast protocol is being used, the icecast
-###		server will save the stream locally to a dumpfile (a dumpfile is just a
-###		raw mp3 stream dump). Using this feature will cause data to be written
-###		to the drive on the icecast server, so use with caution, or you will
-###		fill up your disk!
+###                special feature of recent icecast servers. When dumpfile is not
+###                undefined, and the x-audiocast protocol is being used, the icecast
+###                server will save the stream locally to a dumpfile (a dumpfile is just a
+###                raw mp3 stream dump). Using this feature will cause data to be written
+###                to the drive on the icecast server, so use with caution, or you will
+###                fill up your disk!
 
-###	METHOD: name( $nameString )
-###	Get/set the name of the stream.
+###        METHOD: name( $nameString )
+###        Get/set the name of the stream.
 
-###	METHOD: url( $urlString )
-###	Get/set the url of the stream's homepage.
+###        METHOD: url( $urlString )
+###        Get/set the url of the stream's homepage.
 
-###	METHOD: genre( $genreString )
-###	Get/set the stream's genre.
+###        METHOD: genre( $genreString )
+###        Get/set the stream's genre.
 
-###	METHOD: description( $descriptionString )
-###	Get/set the description of the stream.
+###        METHOD: description( $descriptionString )
+###        Get/set the description of the stream.
 
-###	METHOD: public( $boolean )
-###	Get/set the connection's public flag. This flag, when set to true, indicates
-###		that the stream may be listed in the public directory servers.
+###        METHOD: public( $boolean )
+###        Get/set the connection's public flag. This flag, when set to true, indicates
+###                that the stream may be listed in the public directory servers.
 
-###	METHOD: nonblocking( $boolean )
-###	Get/set the connection's nonblocking flag. This flag, when set to true, indicates
-###		that sends should complete instantly, queueing data if necessary.
+###        METHOD: nonblocking( $boolean )
+###        Get/set the connection's nonblocking flag. This flag, when set to true, indicates
+###                that sends should complete instantly, queueing data if necessary.
 
 ### (PROXY) METHOD: AUTOLOAD( @args )
-###	Provides a proxy for functions and methods which aren't explicitly defined.
+###        Provides a proxy for functions and methods which aren't explicitly defined.
 sub AUTOLOAD {
     ( my $method = $AUTOLOAD ) =~ s/.*:://;
 
     # Translate Shout 1.0 calls. This should probably be made optional.
     if ( defined($CompatibilityMethods{$method}) ) {
-	$method = $CompatibilityMethods{$method};
+        $method = $CompatibilityMethods{$method};
     }
 
     if (grep {$_ eq $method} @TranslatedMethods) {
       NOSTRICT: {
-	  no strict 'refs';
+          no strict 'refs';
 
-	  my $setMethod = "shout_set_$method";
-	  my $getMethod = "shout_get_$method";
+          my $setMethod = "shout_set_$method";
+          my $getMethod = "shout_get_$method";
 
-	  *$AUTOLOAD = sub ($$) {
-	      my $obj = shift;
-	      return $obj->$setMethod(@_) if @_;
-	      return $obj->$getMethod();
-	  };
+          *$AUTOLOAD = sub ($$) {
+              my $obj = shift;
+              return $obj->$setMethod(@_) if @_;
+              return $obj->$getMethod();
+          };
       }
 
-	goto &$AUTOLOAD;
+        goto &$AUTOLOAD;
     }
 
     # Check for string or integer constants
     my $val = strconstant($method, @_ ? $_[0] : 0);
     if ($! != 0 && ($! =~ /Invalid/ || $!{EINVAL})) {
-	$val = constant($method, @_ ? $_[0] : 0);
+        $val = constant($method, @_ ? $_[0] : 0);
     }
     if ($! == 0) {
       NOSTRICT: {
-	  no strict 'refs';
+          no strict 'refs';
 
-	  *$method = sub { $val };
-	  goto &$method;
+          *$method = sub { $val };
+          goto &$method;
       }
     }
 
@@ -614,7 +646,7 @@ sub AUTOLOAD {
 
 __END__
 
-###	AUTOGENERATED DOCUMENTATION FOLLOWS
+###        AUTOGENERATED DOCUMENTATION FOLLOWS
 
 =head1 METHODS
 
@@ -734,7 +766,7 @@ hash is in the following form:
         port        => <destination port>,
         mount       => <stream mountpoint>,
         password    => <password to use when connecting>,
-        user	    => <username to use when connecting>,
+        user            => <username to use when connecting>,
         dumpfile    => <dumpfile for the stream>,
         name        => <name of the stream>,
         url         => <url of stream's homepage>,
