@@ -165,7 +165,7 @@ use strict;
 BEGIN {
     use vars qw($VERSION @ISA @EXPORT @EXPORT_OK %EXPORT_TAGS $AUTOLOAD);
 
-    $VERSION = '2.1';
+    $VERSION = '2.1.1';
 
     use Carp;
 
