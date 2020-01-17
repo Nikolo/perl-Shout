@@ -1,7 +1,11 @@
 Revision history for Perl extension Shout.
 
-2.1   Mon Feb 14 12:10:00 2004
-        - updated to libshout 2.1
+{{$NEXT}}
+    - New maintainer
+    - Dist::Zilla support
+
+2.1.1 Mon Feb 14 12:10:00 2004
+    - updated to libshout 2.1
 
 2.0   Sat Jul  5 14:47:00 2003
 	- full implementation
@@ -13,11 +17,10 @@ Revision history for Perl extension Shout.
 1.0   Sat Apr 21 14:12:00 2001
 	- stable release
 	- update for latest libshout changes including
-	  additional icy parameters
+      additional icy parameters
 
 0.95  Thu Mar 16 00:10:00 2000
 	- first release, no docs :(
 
 0.01  Tue Feb  8 03:07:32 2000
 	- original version; created by h2xs 1.19
-

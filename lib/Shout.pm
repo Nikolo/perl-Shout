@@ -1,5 +1,5 @@
 #!/usr/bin/perl -w
-###########################################################################
+
 
 =head1 NAME
 
@@ -10,24 +10,24 @@ Shout - Perl glue for libshout MP3 streaming source library
   use Shout        qw{};
 
   my $conn = new Shout
-        host                  => 'localhost',
-        port                => 8000,
-        mount                => 'testing',
-        nonblocking     => 0,
-        password        => 'pa$$word!',
-        user                => 'username',
-        dumpfile        => undef,
-        name                => 'Wir sind nur Affen',
-        url                => 'http://apan.org/'
-        genre                => 'Monkey Music',
-        description        => 'A whole lotta monkey music.',
-        format          => SHOUT_FORMAT_MP3,
-        protocol        => SHOUT_PROTOCOL_HTTP,
-        public                => 0;
+        host        => 'localhost',
+        port        => 8000,
+        mount       => 'testing',
+        nonblocking => 0,
+        password    => 'pa$$word!',
+        user        => 'username',
+        dumpfile    => undef,
+        name        => 'Wir sind nur Affen',
+        url         => 'http://stream.io/'
+        genre       => 'Monkey Music',
+        description => 'A whole lotta monkey music.',
+        format      => SHOUT_FORMAT_MP3,
+        protocol    => SHOUT_PROTOCOL_HTTP,
+        public      => 0;
 
   # - or -
 
-  my $conn = new Shout;
+  my $conn = Shout->new();
 
   $conn->host('localhost');
   $conn->port(8000);
@@ -86,7 +86,7 @@ The following functions are exported into your package if the 'C<:functions>'
 tag is given as an argument to the C<use> statement.
 
         shout_open
-    shout_get_connected
+        shout_get_connected
         shout_close
         shout_metadata_new
         shout_metadata_free
@@ -150,15 +150,10 @@ handles the socket connections, metadata communication, and data
 streaming for the calling application, and lets developers focus on
 feature sets instead of implementation details.
 
-=head1 AUTHOR
-
-Jack Moffitt <jack@icecast.org>
-Paul Bournival <paulb@cajun.nu> (update to icecast 2)
-Brendan Cully <brendan@xiph.org> (current maintainer)
 
 =cut
 
-###########################################################################
+
 package Shout;
 use strict;
 
@@ -248,9 +243,6 @@ END {
 
 bootstrap Shout $VERSION;
 
-###############################################################################
-###        C O N F I G U R A T I O N   G L O B A L S
-###############################################################################
 use vars qw{@TranslatedMethods %CompatibilityMethods};
 
 @TranslatedMethods = qw{
@@ -275,21 +267,226 @@ use vars qw{@TranslatedMethods %CompatibilityMethods};
   ispublic   => 'public',
 );
 
-###############################################################################
-###        M E T H O D S
-###############################################################################
 
-=head1 new
+sub new {
+    my ($proto, %args) = @_;
+    my $class = ref $proto || $proto;
+    my $self = $class->raw_new() or return undef; # Call lib function
 
-Constructor
+    ### Set each of the config hash elements by using the keys of the
+    ###                config pseudo-hash as the method name
+    foreach my $method ( keys %args ) {
+        ### Allow keys to be of varying case and preceeded by an optional '-'
+        $method =~ s{^-}{};
+        $method = lc $method;
+        $self->$method( $args{$method} );
+    }
+
+    return $self;
+}
+
+sub open {
+    my $self = shift or croak "open: Method called as function";
+
+    $self->shout_open ? 0 : 1;
+}
+
+
+sub get_connected {
+    my $self = shift or croak "open: Method called as function";
+
+    $self->shout_get_connected;
+}
+
+
+sub close {
+    my $self = shift or croak "close: Method called as function";
+
+    $self->shout_close ? 0 : 1;
+}
+
+
+sub get_errno {
+    my $self = shift or croak "get_errno: Method called as function";
+
+    $self->shout_get_errno or undef;
+}
+
+
+sub get_error {
+    my $self = shift or croak "get_error: Method called as function";
+
+    $self->shout_get_error or undef;
+}
+
+
+sub set_metadata ($$) {
+    my $self = shift or croak "set_metadata: Method called as function";
+
+    my %param=@_;
+    my $md=shout_metadata_new();
+    for my $k (keys %param) {
+        shout_metadata_add($md,$k,$param{$k});
+    }
+    $self->shout_set_metadata($md) ? 0 : 1;
+}
+
+sub send ($$) {
+    my $self = shift        or croak "send_data: Method called as function";
+    my $data = shift        or croak "send_data: No data specified";
+    my $len = shift || length $data;
+
+    $self->shout_send( $data, $len ) ? 0 : 1;
+}
+
+
+
+sub sync ($) {
+    my $self = shift or croak "sync: Method called as function";
+
+    $self->shout_sync;
+}
+
+sub delay ($) {
+    my $self = shift or croak "delay: Method called as function";
+
+    $self->shout_delay;
+}
+
+sub queuelen ($) {
+    my $self = shift or croak "delay: Method called as function";
+
+    $self->shout_queuelen;
+}
+
+sub set_audio_info ($$) {
+    my $self = shift or croak "set_audio_info: Method called as function";
+    my %param=@_;
+
+    for my $k (keys %param) {
+        $self->shout_set_audio_info($k, $param{$k}) and return 0;
+    }
+
+    1;
+}
+
+sub get_audio_info ($$) {
+    my $self = shift or croak "get_audio_info: Method called as function";
+    my $k = shift or croak "get_audio_info: No parameter supplied";
+
+    return $self->shout_get_audio_info($k);
+}
+
+
+*Shout::disconnect = *Shout::close;
+*Shout::sendData   = *Shout::send;
+*Shout::error      = *Shout::get_error;
+*Shout::sleep      = *Shout::sync;
+
+
+
+sub connect ($) {
+    my $self = shift or croak "connect: Method called as function";
+
+    $self->format(Shout::SHOUT_FORMAT_MP3());
+
+    return $self->open();
+}
+
+
+
+sub icy_compat ($$) {
+    my $self = shift or croak "icy_compat: Method called as function";
+    if (@_) {
+        my $compat = shift;
+
+        if ($compat) {
+            $self->protocol(Shout::SHOUT_PROTOCOL_ICY()) ? 0 : 1;
+        } else {
+            $self->protocol(Shout::SHOUT_PROTOCOL_XAUDIOCAST()) ? 0 : 1;
+        }
+    } else {
+        return ($self->protocol == Shout::SHOUT_PROTOCOL_ICY()) ? 1 : 0;
+    }
+}
+
+sub bitrate ($$) {
+    my $self = shift or croak "bitrate: Method called as function";
+    if (@_) {
+        my $br = shift or croak "bitrate: No parameter specified";
+
+        $self->set_audio_info(Shout::SHOUT_AI_BITRATE(), $br) ? 0 : 1;
+    } else {
+        return $self->get_audio_info(Shout::SHOUT_AI_BITRATE());
+    }
+}
+
+sub updateMetadata ($$) {
+    my $self = shift or croak "updateMetadata: Method called as function";
+    my $metadata = shift or croak "updateMetadata: No metadata specified";
+
+    return $self->set_metadata(song => $metadata) ? 0 : 1;
+}
+
+sub AUTOLOAD {
+    ( my $method = $AUTOLOAD ) =~ s/.*:://;
+
+    # Translate Shout 1.0 calls. This should probably be made optional.
+    if ( defined($CompatibilityMethods{$method}) ) {
+        $method = $CompatibilityMethods{$method};
+    }
+
+    if (grep {$_ eq $method} @TranslatedMethods) {
+      NOSTRICT: {
+          no strict 'refs';
+
+          my $setMethod = "shout_set_$method";
+          my $getMethod = "shout_get_$method";
+
+          *$AUTOLOAD = sub ($$) {
+              my $obj = shift;
+              return $obj->$setMethod(@_) if @_;
+              return $obj->$getMethod();
+          };
+      }
+
+        goto &$AUTOLOAD;
+    }
+
+    # Check for string or integer constants
+    my $val = strconstant($method, @_ ? $_[0] : 0);
+    if ($! != 0 && ($! =~ /Invalid/ || $!{EINVAL})) {
+        $val = constant($method, @_ ? $_[0] : 0);
+    }
+    if ($! == 0) {
+      NOSTRICT: {
+          no strict 'refs';
+
+          *$method = sub { $val };
+          goto &$method;
+      }
+    }
+
+    croak "No such Shout constant '$method'";
+}
+
+1;
+
+__END__
+
+=head1 METHODS
+
+=over 4
+
+=item Constructor
 
 None of the keys are mandatory, and may be set after the connection object
 is created. This method returns the initialized icecast server
 connection object. Returns the undefined value on failure.
 
-=over
-
 Parameters
+
+=over 8
 
 =item host
 
@@ -348,309 +545,6 @@ stream description
 list the stream in directory servers?
 
 =back
-
-=cut
-
-sub new {
-    my ($proto, %args) = @_;
-    my $class = ref $proto || $proto;
-    my $self = $class->raw_new() or return undef; # Call lib function
-
-    ### Set each of the config hash elements by using the keys of the
-    ###                config pseudo-hash as the method name
-    foreach my $method ( keys %args ) {
-        ### Allow keys to be of varying case and preceeded by an optional '-'
-        $method =~ s{^-}{};
-        $method = lc $method;
-        $self->$method( $args{$method} );
-    }
-
-    return $self;
-}
-
-### METHOD: open( undef )
-### Connect to the target server. Returns undef and sets the object error
-###                message if the open fails; returns a true value if the open
-###                succeeds.
-sub open {
-    my $self = shift or croak "open: Method called as function";
-
-    $self->shout_open ? 0 : 1;
-}
-
-### METHOD: get_connected( undef )
-### Connect to the target server. Returns undef and sets the object error
-###                message if the open fails; returns a true value if the open
-###                succeeds.
-sub get_connected {
-    my $self = shift or croak "open: Method called as function";
-
-    $self->shout_get_connected;
-}
-
-### METHOD: close( undef )
-### Disconnect from the target server. Returns undef and sets the object error
-###                message if the close fails; returns a true value if the close
-###                succeeds.
-sub close {
-    my $self = shift or croak "close: Method called as function";
-
-    $self->shout_close ? 0 : 1;
-}
-
-### METHOD: get_errno( undef )
-###        Returns a machine-readable integer if one has occurred in the
-###                object. Returns the undefined value if no error has occurred.
-sub get_errno {
-    my $self = shift or croak "get_errno: Method called as function";
-
-    $self->shout_get_errno or undef;
-}
-
-### METHOD: get_error( undef )
-###        Returns a human-readable get_error message if one has occurred in the
-###                object. Returns the undefined value if no error has occurred.
-sub get_error {
-    my $self = shift or croak "get_error: Method called as function";
-
-    $self->shout_get_error or undef;
-}
-
-### METHOD: set_metadata(key => value,key => value,...)
-### Sets the metadata for the connection. Returns a true value if the update
-###                succeeds, and the undefined value if it fails.
-sub set_metadata ($$) {
-    my $self = shift or croak "set_metadata: Method called as function";
-
-    my %param=@_;
-    my $md=shout_metadata_new();
-    for my $k (keys %param) {
-        shout_metadata_add($md,$k,$param{$k});
-    }
-    $self->shout_set_metadata($md) ? 0 : 1;
-}
-
-### METHOD: send( $data[, $length] )
-### Send the specified data with the optional length to the Icecast
-###                server. Returns a true value on success, and returns the undefined value
-###                after setting the per-object error message on failure.
-sub send ($$) {
-    my $self = shift        or croak "send_data: Method called as function";
-    my $data = shift        or croak "send_data: No data specified";
-    my $len = shift || length $data;
-
-    $self->shout_send( $data, $len ) ? 0 : 1;
-}
-
-
-### METHOD: sync( undef )
-### Sleep until the connection is ready for more data. This function should be
-###                used only in conjuction with C<send()>, in order to send data 
-###                at the correct speed to the icecast server.
-sub sync ($) {
-    my $self = shift or croak "sync: Method called as function";
-
-    $self->shout_sync; 
-}
-
-### METHOD: delay( undef )
-### Tell how much time (in seconds and fraction of seconds) must be
-### waited until more data can be sent. Use instead of sync() to
-### allow you to do other things while waiting. 
-###                Used only in conjuction with C<send()>, in order to send data 
-###                at the correct speed to the icecast server.
-sub delay ($) {
-    my $self = shift or croak "delay: Method called as function";
-
-    $self->shout_delay; 
-}
-
-### METHOD: queuelen( undef )
-### Tell how many bytes of data are in the write queue. This is only
-### useful in conjunction with nonblocking sends.
-sub queuelen ($) {
-    my $self = shift or croak "delay: Method called as function";
-
-    $self->shout_queuelen;
-}
-
-### METHOD: set_audio_info( key => val, key => val )
-### Set audio parameters (bitrate, samplerate, channels etc) for informational
-### purposes. Audio info is a hash using the SHOUT_AI constants as keys.
-sub set_audio_info ($$) {
-    my $self = shift or croak "set_audio_info: Method called as function";
-    my %param=@_;
- 
-    for my $k (keys %param) {
-        $self->shout_set_audio_info($k, $param{$k}) and return 0;
-    }
-
-    1;
-}
-
-### METHOD: get_audio_info( key )
-### Returns audio parameters
-sub get_audio_info ($$) {
-    my $self = shift or croak "get_audio_info: Method called as function";
-    my $k = shift or croak "get_audio_info: No parameter supplied";
-
-    return $self->shout_get_audio_info($k);
-}
-
-### COMPATIBILITY with Shout 1.0
-*Shout::disconnect = *Shout::close;
-*Shout::sendData   = *Shout::send;
-*Shout::error      = *Shout::get_error;
-*Shout::sleep      = *Shout::sync;
-
-### Compatibility method: connect ( undef )
-### Sets format to MP3, then calls open
-sub connect ($) {
-    my $self = shift or croak "connect: Method called as function";
-
-    $self->format(Shout::SHOUT_FORMAT_MP3());
-
-    return $self->open();
-}
-
-### Compatibility method: icy_compat ( $compat )
-### Translates the icy_compat call to set protocol to icy or xaudiocast
-sub icy_compat ($$) {
-    my $self = shift or croak "icy_compat: Method called as function";
-    if (@_) {
-        my $compat = shift;
-
-        if ($compat) {
-            $self->protocol(Shout::SHOUT_PROTOCOL_ICY()) ? 0 : 1;
-        } else {
-            $self->protocol(Shout::SHOUT_PROTOCOL_XAUDIOCAST()) ? 0 : 1;
-        }
-    } else {
-        return ($self->protocol == Shout::SHOUT_PROTOCOL_ICY()) ? 1 : 0;
-    }
-}
-
-### Compatibility method: bitrate ( $bitrate )
-### Translates the bitrate call to the appropriate audio_info call
-sub bitrate ($$) {
-    my $self = shift or croak "bitrate: Method called as function";
-    if (@_) {
-        my $br = shift or croak "bitrate: No parameter specified";
-
-        $self->set_audio_info(Shout::SHOUT_AI_BITRATE(), $br) ? 0 : 1;
-    } else {
-        return $self->get_audio_info(Shout::SHOUT_AI_BITRATE());
-    }
-}
-
-### Compatibility method: updateMetadata ( $metadata)
-### Translates the metadata call to new form
-sub updateMetadata ($$) {
-    my $self = shift or croak "updateMetadata: Method called as function";
-    my $metadata = shift or croak "updateMetadata: No metadata specified";
-
-    return $self->set_metadata(song => $metadata) ? 0 : 1;
-}
-
-###############################################################################
-###        A U T O L O A D E D   M E T H O D S
-###############################################################################
-
-###        METHOD: port( $portNumber )
-###        Get/set the port to connect to on the target Icecast server.
-
-###        METHOD: mount( $mountPointName )
-###        Get/set the mountpoint to use when connecting to the server.
-
-###        METHOD: password( $password )
-###        Get/set the password to use when connecting to the Icecast server.
-
-###        METHOD: user( $username )
-###        Get/set the username to use when connecting to the Icecast server.
-
-### METHOD: dumpfile( $filename )
-### Get/set the name of the icecast dumpfile for the stream.  The dumpfile is a
-###                special feature of recent icecast servers. When dumpfile is not
-###                undefined, and the x-audiocast protocol is being used, the icecast
-###                server will save the stream locally to a dumpfile (a dumpfile is just a
-###                raw mp3 stream dump). Using this feature will cause data to be written
-###                to the drive on the icecast server, so use with caution, or you will
-###                fill up your disk!
-
-###        METHOD: name( $nameString )
-###        Get/set the name of the stream.
-
-###        METHOD: url( $urlString )
-###        Get/set the url of the stream's homepage.
-
-###        METHOD: genre( $genreString )
-###        Get/set the stream's genre.
-
-###        METHOD: description( $descriptionString )
-###        Get/set the description of the stream.
-
-###        METHOD: public( $boolean )
-###        Get/set the connection's public flag. This flag, when set to true, indicates
-###                that the stream may be listed in the public directory servers.
-
-###        METHOD: nonblocking( $boolean )
-###        Get/set the connection's nonblocking flag. This flag, when set to true, indicates
-###                that sends should complete instantly, queueing data if necessary.
-
-### (PROXY) METHOD: AUTOLOAD( @args )
-###        Provides a proxy for functions and methods which aren't explicitly defined.
-sub AUTOLOAD {
-    ( my $method = $AUTOLOAD ) =~ s/.*:://;
-
-    # Translate Shout 1.0 calls. This should probably be made optional.
-    if ( defined($CompatibilityMethods{$method}) ) {
-        $method = $CompatibilityMethods{$method};
-    }
-
-    if (grep {$_ eq $method} @TranslatedMethods) {
-      NOSTRICT: {
-          no strict 'refs';
-
-          my $setMethod = "shout_set_$method";
-          my $getMethod = "shout_get_$method";
-
-          *$AUTOLOAD = sub ($$) {
-              my $obj = shift;
-              return $obj->$setMethod(@_) if @_;
-              return $obj->$getMethod();
-          };
-      }
-
-        goto &$AUTOLOAD;
-    }
-
-    # Check for string or integer constants
-    my $val = strconstant($method, @_ ? $_[0] : 0);
-    if ($! != 0 && ($! =~ /Invalid/ || $!{EINVAL})) {
-        $val = constant($method, @_ ? $_[0] : 0);
-    }
-    if ($! == 0) {
-      NOSTRICT: {
-          no strict 'refs';
-
-          *$method = sub { $val };
-          goto &$method;
-      }
-    }
-
-    croak "No such Shout constant '$method'";
-}
-
-### Module return value indicates successful loading
-1;
-
-__END__
-
-###        AUTOGENERATED DOCUMENTATION FOLLOWS
-
-=head1 METHODS
-
-=over 4
 
 =item I<open( undef )>
 
@@ -739,7 +633,7 @@ correct speed to the icecast server.
 
 Tell how much time (in seconds and fraction of seconds) must be
 waited until more data can be sent. Use instead of sync() to
-allow you to do other things while waiting. 
+allow you to do other things while waiting.
 
 =item I<set_metadata( $newMetadata )>
 
@@ -752,36 +646,6 @@ Get/set the url of the stream's homepage.
 
 =back
 
-=head2 Constructor Methods
-
-=over 4
-
-=item I<new( %config )>
-
-Create and initialize a new icecast server connection. The configuration
-hash is in the following form:
-
-    (
-        host        => <destination ip address>,
-        port        => <destination port>,
-        mount       => <stream mountpoint>,
-        password    => <password to use when connecting>,
-        user            => <username to use when connecting>,
-        dumpfile    => <dumpfile for the stream>,
-        name        => <name of the stream>,
-        url         => <url of stream's homepage>,
-        genre       => <genre of the stream>,
-        description => <stream description>,
-        public    => <public flag - list the stream in directory servers>,
-    )
-
-
-None of the keys are mandatory, and may be set after the connection object
-is created. This method returns the initialized icecast server
-connection object. Returns the undefined value on failure.
-
-=back
-
 =head2 Proxy Methods
 
 =over 4
@@ -791,5 +655,20 @@ connection object. Returns the undefined value on failure.
 Provides a proxy for functions and methods which aren't explicitly defined.
 
 =back
+
+=head1 AUTHOR
+
+Jack Moffitt <jack@icecast.org>
+
+=head1 COPYRIGHT
+
+Copyright 2020- Nikolay Shulyakovskiy
+
+=head1 LICENSE
+
+This library is free software; you can redistribute it and/or modify
+it under the same terms as Perl itself.
+
+=head1 SEE ALSO
 
 =cut
