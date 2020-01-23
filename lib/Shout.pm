@@ -1,173 +1,15 @@
-#!/usr/bin/perl -w
-
-
-=head1 NAME
-
-Shout - Perl glue for libshout MP3 streaming source library
-
-=head1 SYNOPSIS
-
-  use Shout        qw{};
-
-  my $conn = new Shout
-        host        => 'localhost',
-        port        => 8000,
-        mount       => 'testing',
-        nonblocking => 0,
-        password    => 'pa$$word!',
-        user        => 'username',
-        dumpfile    => undef,
-        name        => 'Wir sind nur Affen',
-        url         => 'http://stream.io/'
-        genre       => 'Monkey Music',
-        description => 'A whole lotta monkey music.',
-        format      => SHOUT_FORMAT_MP3,
-        protocol    => SHOUT_PROTOCOL_HTTP,
-        public      => 0;
-
-  # - or -
-
-  my $conn = Shout->new();
-
-  $conn->host('localhost');
-  $conn->port(8000);
-  $conn->mount('testing');
-  $conn->nonblocking(0);
-  $conn->set_password('pa$$word!');
-  $conn->set_user('username');
-  $conn->dumpfile(undef);
-  $conn->name('Test libshout-perl stream');
-  $conn->url('http://www.icecast.org/');
-  $conn->genre('perl');
-  $conn->format(SHOUT_FORMAT_MP3);
-  $conn->protocol(SHOUT_PROTOCOL_HTTP);
-  $conn->description('Stream with icecast at http://www.icecast.org');
-  $conn->public(0);
-
-  ### Set your stream audio parameters for YP if you want
-  $conn->set_audio_info(SHOUT_AI_BITRATE => 128, SHOUT_AI_SAMPLERATE => 44100);
-
-  ### Connect to the server
-  $conn->open or die "Failed to open: ", $conn->get_error;
-
-  ### Set stream info
-  $conn->set_metadata('song' => 'Scott Joplin - Maple Leaf Rag');
-
-  ### Stream some data
-  my ( $buffer, $bytes ) = ( '', 0 );
-  while( ($bytes = sysread( STDIN, $buffer, 4096 )) > 0 ) {
-      $conn->send( $buffer ) && next;
-      print STDERR "Error while sending: ", $conn->get_error, "\n";
-      last;
-  } continue {
-      $conn->sync
-  }
-
-  ### Now close the connection
-  $conn->close;
-
-=head1 EXPORTS
-
-Nothing by default.
-
-=head2 :constants
-
-The following error constants are exported into your package if the
-'C<:constants>' tag is given as an argument to the C<use> statement.
-
-        SHOUT_FORMAT_MP3 SHOUT_FORMAT_VORBIS
-        SHOUT_PROTOCOL_ICY SHOUT_PROTOCOL_XAUDIOCAST SHOUT_PROTOCOL_HTTP
-        SHOUT_AI_BITRATE SHOUT_AI_SAMPLERATE SHOUT_AI_CHANNELS
-        SHOUT_AI_QUALITY
-
-=head2 :functions
-
-The following functions are exported into your package if the 'C<:functions>'
-tag is given as an argument to the C<use> statement.
-
-        shout_open
-        shout_get_connected
-        shout_close
-        shout_metadata_new
-        shout_metadata_free
-        shout_metadata_add
-        shout_set_metadata
-        shout_send_data
-        shout_sync
-        shout_delay
-        shout_set_host
-        shout_set_port
-        shout_set_mount
-        shout_set_nonblocking
-        shout_set_password
-        shout_set_user
-        shout_set_icq
-        shout_set_irc
-        shout_set_dumpfile
-        shout_set_name
-        shout_set_url
-        shout_set_genre
-        shout_set_description
-        shout_set_public
-        shout_get_host
-        shout_get_port
-        shout_get_mount
-        shout_get_nonblocking
-        shout_get_password
-        shout_get_user
-        shout_get_icq
-        shout_get_irc
-        shout_get_dumpfile
-        shout_get_name
-        shout_get_url
-        shout_get_genre
-        shout_get_description
-        shout_get_public
-        shout_get_error
-        shout_get_errno
-        shout_set_format
-        shout_get_format
-        shout_set_protocol
-        shout_get_protocol
-        shout_set_audio_info
-        shout_get_audio_info
-        shout_queuelen
-
-They work almost identically to their libshout C counterparts. See the libshout
-documentation for more information about how to use the function interface.
-
-=head2 :all
-
-All of the above symbols can be imported into your namespace by giving the
-'C<:all>' tag as an argument to the C<use> statement.
-
-=head1 DESCRIPTION
-
-This module is an object-oriented interface to libshout, an Ogg Vorbis
-and MP3 streaming library that allows applications to easily
-communicate and broadcast to an Icecast streaming media server. It
-handles the socket connections, metadata communication, and data
-streaming for the calling application, and lets developers focus on
-feature sets instead of implementation details.
-
-
-=cut
-
-
 package Shout;
+use 5.010001;
 use strict;
-
-use vars qw($VERSION @ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
-
-$VERSION = '2.1.1';
-
+use warnings;
 use Carp;
 
-require DynaLoader;
-require AutoLoader;
+require Exporter;
+use AutoLoader;
 
-# Inheritance
-@ISA = qw(DynaLoader);
+use vars qw($VERSION @ISA);
+
+$VERSION = '2.1.1';
 
 sub AUTOLOAD {
     # This AUTOLOAD is used to 'autoload' constants from the constant()
@@ -186,7 +28,8 @@ sub AUTOLOAD {
     goto &$AUTOLOAD;
 }
 
-bootstrap Shout $VERSION;
+require XSLoader;
+XSLoader::load('Shout', $VERSION);
 
 shout_init ();
 
@@ -378,6 +221,156 @@ for my $method (qw{
 1;
 
 __END__
+
+=head1 NAME
+
+Shout - Perl glue for libshout MP3 streaming source library
+
+=head1 SYNOPSIS
+
+  use Shout        qw{};
+
+  my $conn = new Shout
+        host        => 'localhost',
+        port        => 8000,
+        mount       => 'testing',
+        nonblocking => 0,
+        password    => 'pa$$word!',
+        user        => 'username',
+        dumpfile    => undef,
+        name        => 'Wir sind nur Affen',
+        url         => 'http://stream.io/'
+        genre       => 'Monkey Music',
+        description => 'A whole lotta monkey music.',
+        format      => SHOUT_FORMAT_MP3,
+        protocol    => SHOUT_PROTOCOL_HTTP,
+        public      => 0;
+
+  # - or -
+
+  my $conn = Shout->new();
+
+  $conn->host('localhost');
+  $conn->port(8000);
+  $conn->mount('testing');
+  $conn->nonblocking(0);
+  $conn->set_password('pa$$word!');
+  $conn->set_user('username');
+  $conn->dumpfile(undef);
+  $conn->name('Test libshout-perl stream');
+  $conn->url('http://www.icecast.org/');
+  $conn->genre('perl');
+  $conn->format(SHOUT_FORMAT_MP3);
+  $conn->protocol(SHOUT_PROTOCOL_HTTP);
+  $conn->description('Stream with icecast at http://www.icecast.org');
+  $conn->public(0);
+
+  ### Set your stream audio parameters for YP if you want
+  $conn->set_audio_info(SHOUT_AI_BITRATE => 128, SHOUT_AI_SAMPLERATE => 44100);
+
+  ### Connect to the server
+  $conn->open or die "Failed to open: ", $conn->get_error;
+
+  ### Set stream info
+  $conn->set_metadata('song' => 'Scott Joplin - Maple Leaf Rag');
+
+  ### Stream some data
+  my ( $buffer, $bytes ) = ( '', 0 );
+  while( ($bytes = sysread( STDIN, $buffer, 4096 )) > 0 ) {
+      $conn->send( $buffer ) && next;
+      print STDERR "Error while sending: ", $conn->get_error, "\n";
+      last;
+  } continue {
+      $conn->sync
+  }
+
+  ### Now close the connection
+  $conn->close;
+
+=head1 EXPORTS
+
+Nothing by default.
+
+=head2 :constants
+
+The following error constants are exported into your package if the
+'C<:constants>' tag is given as an argument to the C<use> statement.
+
+        SHOUT_FORMAT_MP3 SHOUT_FORMAT_VORBIS
+        SHOUT_PROTOCOL_ICY SHOUT_PROTOCOL_XAUDIOCAST SHOUT_PROTOCOL_HTTP
+        SHOUT_AI_BITRATE SHOUT_AI_SAMPLERATE SHOUT_AI_CHANNELS
+        SHOUT_AI_QUALITY
+
+=head2 :functions
+
+The following functions are exported into your package if the 'C<:functions>'
+tag is given as an argument to the C<use> statement.
+
+        shout_open
+        shout_get_connected
+        shout_close
+        shout_metadata_new
+        shout_metadata_free
+        shout_metadata_add
+        shout_set_metadata
+        shout_send_data
+        shout_sync
+        shout_delay
+        shout_set_host
+        shout_set_port
+        shout_set_mount
+        shout_set_nonblocking
+        shout_set_password
+        shout_set_user
+        shout_set_icq
+        shout_set_irc
+        shout_set_dumpfile
+        shout_set_name
+        shout_set_url
+        shout_set_genre
+        shout_set_description
+        shout_set_public
+        shout_get_host
+        shout_get_port
+        shout_get_mount
+        shout_get_nonblocking
+        shout_get_password
+        shout_get_user
+        shout_get_icq
+        shout_get_irc
+        shout_get_dumpfile
+        shout_get_name
+        shout_get_url
+        shout_get_genre
+        shout_get_description
+        shout_get_public
+        shout_get_error
+        shout_get_errno
+        shout_set_format
+        shout_get_format
+        shout_set_protocol
+        shout_get_protocol
+        shout_set_audio_info
+        shout_get_audio_info
+        shout_queuelen
+
+They work almost identically to their libshout C counterparts. See the libshout
+documentation for more information about how to use the function interface.
+
+=head2 :all
+
+All of the above symbols can be imported into your namespace by giving the
+'C<:all>' tag as an argument to the C<use> statement.
+
+=head1 DESCRIPTION
+
+This module is an object-oriented interface to libshout, an Ogg Vorbis
+and MP3 streaming library that allows applications to easily
+communicate and broadcast to an Icecast streaming media server. It
+handles the socket connections, metadata communication, and data
+streaming for the calling application, and lets developers focus on
+feature sets instead of implementation details.
+
 
 =head1 METHODS
 

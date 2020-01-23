@@ -2,85 +2,15 @@
 #include "perl.h"
 #include "XSUB.h"
 
+#include "ppport.h"
+
 #include <shout/shout.h>
 
-static const char *
-strconstant(const char *name, int arg)
-{
-  errno = 0;
+#include "const-c.inc"
 
-  if (strEQ(name,"SHOUT_AI_BITRATE"))
-    return SHOUT_AI_BITRATE;
+MODULE = Shout		PACKAGE = Shout
 
-  if (strEQ(name,"SHOUT_AI_SAMPLERATE"))
-    return SHOUT_AI_SAMPLERATE;
-
-  if (strEQ(name,"SHOUT_AI_CHANNELS"))
-    return SHOUT_AI_CHANNELS;
-
-  if (strEQ(name,"SHOUT_AI_QUALITY"))
-    return SHOUT_AI_QUALITY;
-
-  errno = EINVAL;  
-  return NULL;
-}
-
-static double
-constant(char *name, int arg)
-{
-   errno = 0;
-
-   if (strEQ(name,"SHOUTERR_SUCCESS"))
-     return SHOUTERR_SUCCESS;
-   if (strEQ(name,"SHOUTERR_INSANE"))
-     return SHOUTERR_INSANE;
-   if (strEQ(name,"SHOUTERR_NOCONNECT"))
-     return SHOUTERR_NOCONNECT;
-   if (strEQ(name,"SHOUTERR_NOLOGIN"))
-     return SHOUTERR_NOLOGIN;
-   if (strEQ(name,"SHOUTERR_SOCKET"))
-     return SHOUTERR_SOCKET;
-   if (strEQ(name,"SHOUTERR_MALLOC"))
-     return SHOUTERR_MALLOC;
-   if (strEQ(name,"SHOUTERR_METADATA"))
-     return SHOUTERR_METADATA;
-   if (strEQ(name,"SHOUTERR_CONNECTED"))
-     return SHOUTERR_CONNECTED;
-   if (strEQ(name,"SHOUTERR_UNCONNECTED"))
-     return SHOUTERR_UNCONNECTED;
-   if (strEQ(name,"SHOUTERR_UNSUPPORTED"))
-     return SHOUTERR_UNSUPPORTED;
-   if (strEQ(name,"SHOUTERR_BUSY"))
-     return SHOUTERR_BUSY;
-   if (strEQ(name, "SHOUT_FORMAT_MP3"))
-     return SHOUT_FORMAT_MP3;
-   if (strEQ(name, "SHOUT_FORMAT_OGG") || strEQ(name, "SHOUT_FORMAT_VORBIS"))
-     return SHOUT_FORMAT_OGG;
-   if (strEQ(name, "SHOUT_PROTOCOL_ICY"))
-     return SHOUT_PROTOCOL_ICY;
-   if (strEQ(name, "SHOUT_PROTOCOL_XAUDIOCAST"))
-     return SHOUT_PROTOCOL_XAUDIOCAST;
-   if (strEQ(name, "SHOUT_PROTOCOL_HTTP"))
-     return SHOUT_PROTOCOL_HTTP;
-
-   errno = EINVAL;
-   return 0;
-}
-
-
-MODULE = Shout		PACKAGE = Shout		
-
-PROTOTYPES: ENABLE
-
-const char *
-strconstant(name, arg)
-  const char * name
-  int          arg
-
-double
-constant(name,arg)
-	char *		name
-	int		arg
+INCLUDE: const-xs.inc
 
 void
 shout_init()

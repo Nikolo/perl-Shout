@@ -3,7 +3,9 @@ Revision history for Perl extension Shout.
 {{$NEXT}}
     - Remove INIT block
     - Add any tests
-    - Remove AUTOLOAD
+    - Add test on connect
+    - recreated by h2xs 1.23 with options
+        -b 5.10.1 -n Shout shout/shout.h
 
 2.1.2  2020-01-18 00:47:42 MSK
     - New maintainer
