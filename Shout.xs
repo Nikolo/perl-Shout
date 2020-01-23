@@ -4,13 +4,6 @@
 
 #include <shout/shout.h>
 
-static int
-not_here(char *s)
-{
-   croak("%s not implemented on this architecture", s);
-   return -1;
-}
-
 static const char *
 strconstant(const char *name, int arg)
 {
@@ -31,7 +24,7 @@ strconstant(const char *name, int arg)
   errno = EINVAL;  
   return NULL;
 }
-	
+
 static double
 constant(char *name, int arg)
 {

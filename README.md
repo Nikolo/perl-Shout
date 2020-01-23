@@ -30,8 +30,8 @@ Shout - Perl glue for libshout MP3 streaming source library
     $conn->port(8000);
     $conn->mount('testing');
     $conn->nonblocking(0);
-    $conn->password('pa$$word!');
-    $conn->user('username');
+    $conn->set_password('pa$$word!');
+    $conn->set_user('username');
     $conn->dumpfile(undef);
     $conn->name('Test libshout-perl stream');
     $conn->url('http://www.icecast.org/');

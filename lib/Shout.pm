@@ -33,8 +33,8 @@ Shout - Perl glue for libshout MP3 streaming source library
   $conn->port(8000);
   $conn->mount('testing');
   $conn->nonblocking(0);
-  $conn->password('pa$$word!');
-  $conn->user('username');
+  $conn->set_password('pa$$word!');
+  $conn->set_user('username');
   $conn->dumpfile(undef);
   $conn->name('Test libshout-perl stream');
   $conn->url('http://www.icecast.org/');
@@ -157,116 +157,42 @@ feature sets instead of implementation details.
 package Shout;
 use strict;
 
-BEGIN {
-    use vars qw($VERSION @ISA @EXPORT @EXPORT_OK %EXPORT_TAGS $AUTOLOAD);
+use vars qw($VERSION @ISA @EXPORT @EXPORT_OK %EXPORT_TAGS);
 
-    $VERSION = '2.1.1';
+$VERSION = '2.1.1';
 
-    use Carp;
+use Carp;
 
-    require Exporter;
-    require DynaLoader;
-    require AutoLoader;
+require DynaLoader;
+require AutoLoader;
 
-    # Inheritance
-    @ISA = qw(Exporter DynaLoader);
+# Inheritance
+@ISA = qw(DynaLoader);
 
-    ### Exporter stuff
-    @EXPORT = qw {
-        SHOUT_FORMAT_VORBIS SHOUT_FORMAT_MP3
-        SHOUT_PROTOCOL_ICY SHOUT_PROTOCOL_XAUDIOCAST SHOUT_PROTOCOL_HTTP
-        SHOUT_AI_BITRATE SHOUT_AI_SAMPLERATE SHOUT_AI_QUALITY
-        SHOUT_AI_CHANNELS
-        SHOUTERR_SUCCESS SHOUTERR_INSANE SHOUTERR_NOCONNECT SHOUTERR_NOLOGIN
-        SHOUTERR_SOCKET SHOUTERR_MALLOC SHOUTERR_METADATA SHOUTERR_CONNECTED
-        SHOUTERR_UNCONNECTED SHOUTERR_UNSUPPORTED SHOUTERR_BUSY
-    };
-    @EXPORT_OK = qw{
-        SHOUT_FORMAT_VORBIS SHOUT_FORMAT_MP3
-        SHOUT_PROTOCOL_ICY SHOUT_PROTOCOL_XAUDIOCAST SHOUT_PROTOCOL_HTTP
-        SHOUT_AI_BITRATE SHOUT_AI_SAMPLERATE SHOUT_AI_QUALITY
-        SHOUT_AI_CHANNELS
-        SHOUTERR_SUCCESS SHOUTERR_INSANE SHOUTERR_NOCONNECT SHOUTERR_NOLOGIN
-        SHOUTERR_SOCKET SHOUTERR_MALLOC SHOUTERR_METADATA SHOUTERR_CONNECTED
-        SHOUTERR_UNCONNECTED SHOUTERR_UNSUPPORTED SHOUTERR_BUSY
-        shout_open shout_get_connected shout_close
-        shout_set_metadata shout_metadata_new shout_metadata_free
-        shout_metadata_add shout_send_data shout_sync shout_delay shout_queuelen
-        shout_set_host shout_set_port shout_set_mount shout_set_password
-        shout_set_user shout_set_dumpfile shout_set_name
-        shout_set_url shout_set_genre shout_set_description
-        shout_set_public shout_get_host
-        shout_get_port shout_get_mount shout_get_password
-        shout_get_user shout_get_dumpfile shout_get_name
-        shout_get_url shout_get_genre shout_get_description
-        shout_get_public shout_get_error shout_set_format shout_get_format
-        shout_get_audio_info shout_set_audio_info
-        shout_set_protocol shout_get_protocol shout_get_errno
-        shout_get_nonblocking shout_set_nonblocking
-    };
-    %EXPORT_TAGS = (
-        all       => \@EXPORT_OK,
-        constants => [qw{SHOUT_FORMAT_VORBIS SHOUT_FORMAT_MP3
-            SHOUT_PROTOCOL_ICY SHOUT_PROTOCOL_XAUDIOCAST SHOUT_PROTOCOL_HTTP
-            SHOUT_AI_BITRATE SHOUT_AI_SAMPLERATE SHOUT_AI_QUALITY
-            SHOUT_AI_CHANNELS
-            SHOUTERR_SUCCESS SHOUTERR_INSANE SHOUTERR_NOCONNECT SHOUTERR_NOLOGIN
-            SHOUTERR_SOCKET SHOUTERR_MALLOC SHOUTERR_METADATA SHOUTERR_CONNECTED
-            SHOUTERR_UNCONNECTED SHOUTERR_UNSUPPORTED SHOUTERR_BUSY
-        }],
-        functions => [qw{shout_open shout_get_connected shout_close
-            shout_set_metadata shout_metadata_add shout_metadata_new
-            shout_metadata_free shout_send_data shout_sync shout_delay
-            shout_get_audio_info shout_set_audio_info
-            shout_set_host shout_set_port shout_set_mount shout_set_password
-            shout_set_user shout_set_dumpfile shout_set_name
-            shout_set_url shout_set_genre shout_set_description
-            shout_set_public shout_get_host
-            shout_get_port shout_get_mount shout_get_password
-            shout_get_user shout_get_dumpfile shout_get_name
-            shout_get_url shout_get_genre shout_get_description
-            shout_get_public shout_get_error shout_get_errno
-            shout_set_protocol shout_get_protocol
-            shout_set_format shout_get_format
-            shout_get_nonblocking shout_set_nonblocking shout_queuelen
-        }],
-    );
-}
+sub AUTOLOAD {
+    # This AUTOLOAD is used to 'autoload' constants from the constant()
+    # XS function.
 
-INIT {
-    shout_init ();
-}
-
-END {
-    shout_shutdown ();
+    my $constname;
+    our $AUTOLOAD;
+    ($constname = $AUTOLOAD) =~ s/.*:://;
+    croak "&Lib::Foo::constant not defined" if $constname eq 'constant';
+    my ($error, $val) = constant($constname);
+    if ($error) { croak $error; }
+    {
+        no strict 'refs';
+        *$AUTOLOAD = sub { $val };
+    }
+    goto &$AUTOLOAD;
 }
 
 bootstrap Shout $VERSION;
 
-use vars qw{@TranslatedMethods %CompatibilityMethods};
+shout_init ();
 
-@TranslatedMethods = qw{
-    host
-    port
-    mount
-    password
-    user
-    dumpfile
-    name
-    url
-    genre
-    description
-    public
-    format
-    protocol
-    nonblocking
-};
-
-%CompatibilityMethods = (
-  ip         => 'host',
-  ispublic   => 'public',
-);
-
+END {
+    shout_shutdown ();
+}
 
 sub new {
     my ($proto, %args) = @_;
@@ -339,8 +265,6 @@ sub send ($$) {
     $self->shout_send( $data, $len ) ? 0 : 1;
 }
 
-
-
 sub sync ($) {
     my $self = shift or croak "sync: Method called as function";
 
@@ -377,13 +301,10 @@ sub get_audio_info ($$) {
     return $self->shout_get_audio_info($k);
 }
 
-
 *Shout::disconnect = *Shout::close;
 *Shout::sendData   = *Shout::send;
 *Shout::error      = *Shout::get_error;
 *Shout::sleep      = *Shout::sync;
-
-
 
 sub connect ($) {
     my $self = shift or croak "connect: Method called as function";
@@ -428,46 +349,30 @@ sub updateMetadata ($$) {
     return $self->set_metadata(song => $metadata) ? 0 : 1;
 }
 
-sub AUTOLOAD {
-    ( my $method = $AUTOLOAD ) =~ s/.*:://;
-
-    # Translate Shout 1.0 calls. This should probably be made optional.
-    if ( defined($CompatibilityMethods{$method}) ) {
-        $method = $CompatibilityMethods{$method};
-    }
-
-    if (grep {$_ eq $method} @TranslatedMethods) {
-      NOSTRICT: {
-          no strict 'refs';
-
-          my $setMethod = "shout_set_$method";
-          my $getMethod = "shout_get_$method";
-
-          *$AUTOLOAD = sub ($$) {
-              my $obj = shift;
-              return $obj->$setMethod(@_) if @_;
-              return $obj->$getMethod();
-          };
-      }
-
-        goto &$AUTOLOAD;
-    }
-
-    # Check for string or integer constants
-    my $val = strconstant($method, @_ ? $_[0] : 0);
-    if ($! != 0 && ($! =~ /Invalid/ || $!{EINVAL})) {
-        $val = constant($method, @_ ? $_[0] : 0);
-    }
-    if ($! == 0) {
-      NOSTRICT: {
-          no strict 'refs';
-
-          *$method = sub { $val };
-          goto &$method;
-      }
-    }
-
-    croak "No such Shout constant '$method'";
+for my $method (qw{
+    host
+    port
+    mount
+    password
+    user
+    dumpfile
+    name
+    url
+    genre
+    description
+    public
+    format
+    protocol
+    nonblocking
+}) {
+    my $set_method = "shout_set_$method";
+    my $get_method = "shout_get_$method";
+    no strict 'refs';
+    *$method = sub {
+        my $self = shift;
+        return $self->$set_method(@_) if @_;
+        return $self->$get_method();
+    };
 }
 
 1;

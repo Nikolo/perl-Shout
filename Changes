@@ -1,6 +1,11 @@
 Revision history for Perl extension Shout.
 
 {{$NEXT}}
+    - Remove INIT block
+    - Add any tests
+    - Remove AUTOLOAD
+
+2.1.2  2020-01-18 00:47:42 MSK
     - New maintainer
     - Dist::Zilla support
 
