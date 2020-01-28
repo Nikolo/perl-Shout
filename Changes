@@ -4,7 +4,7 @@ Revision history for Perl extension Shout.
     - Fix test
     - Check pkg-config return code
 
-2.1.2  2020-01-23 22:13:29 MSK
+2.1.3  2020-01-23 22:13:29 MSK
     - Remove INIT block
     - Add any tests
     - Add test on connect
