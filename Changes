@@ -1,6 +1,8 @@
 Revision history for Perl extension Shout.
 
 {{$NEXT}}
+
+2.1.5  2020-01-29 18:45:43 MSK
     - Add Makefile, license file and meta
 
 2.1.4  2020-01-28 21:12:16 MSK

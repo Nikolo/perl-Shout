@@ -15,7 +15,12 @@
    "name" : "Shout",
    "no_index" : {
       "directory" : [
-         "[ qw( t xt inc share eg examples ) ]"
+         "eg",
+         "examples",
+         "inc",
+         "share",
+         "t",
+         "xt"
       ]
    },
    "prereqs" : {
@@ -56,7 +61,7 @@
          "web" : "https://github.com/Nikolo/perl-Shout"
       }
    },
-   "version" : "2.1.4",
+   "version" : "2.1.5",
    "x_contributors" : [
       "Brendan Cully <brendan@xiph.org>",
       "Nikolay Shulyakivskyy <n.shulyakovskiy@corp.mail.ru>"
